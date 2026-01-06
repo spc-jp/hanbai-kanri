@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>販売管理システム導入前ヒヤリングシート</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- PDF Generation (html2pdf.js) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Icons (FontAwesome) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    /* 配色コンセプト：数字を“即判断できる”経営目線 */
+    
+    /* メイン：流れを作るシアン */
+    --primary: #22AEC9;      
+    --primary-dark: #1a8e9e; /* ホバー用 */
+    
+    /* サブ：全体を締める濃紺 */
+    --secondary: #020562;
+    
+    /* アクセント：注意喚起（既存維持） */
+    --accent: #f59e0b;       
+    
+    /* ベース：清潔感のある白 */
+    --bg: #f0f6f8;           /* 背景はごく薄いシアングレー */
+    --card: #FEFEFE;         /* カード・入力欄は指定の白 */
+    
+    /* テキスト */
+    --text: #334155;         /* 本文は読みやすいグレー */
+    --heading: #020562;      /* 見出しはサブカラーで締める */
+    --sub: #64748b;
+    --line: #e2e8f0;
+    
+    /* 装飾用 */
+    --soft-bg: #e6f7fa;      /* メインカラーの極薄版 */
+    --success: #10b981;
+    --radius: 12px;
+    --header-btn-bg: #f1f5f9;
+    --header-btn-hover: #e2e8f0;
+  }
+
+  body.dark-mode {
+    --primary: #22AEC9;
+    --primary-dark: #67e2fa;
+    --secondary: #a5b4fc;    /* ダークモード時は視認性のため明るめの紫紺に */
+    --accent: #fbbf24;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --heading: #f1f5f9;
+    --sub: #94a3b8;
+    --line: #334155;
+    --soft-bg: #1e293b;
+    --header-btn-bg: #334155;
+    --header-btn-hover: #475569;
+  }
+
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: var(--bg);
+    margin: 0;
+    padding: 10px;
+    color: var(--text);
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* --- Layout --- */
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: 0 4px 25px rgba(2, 5, 98, 0.08); /* 影にサブカラーを少し含ませる */
+    padding-bottom: 40px; 
+  }
+
+  /* --- Header --- */
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 15px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  
+  .logo-box {
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+  .logo-box span { font-size: 9px; color: var(--sub); text-align: center; }
+  #logoInput { display: none; }
+
+  .brand h1 {
+    font-size: 18px;
+    margin: 0;
+    color: var(--secondary); /* タイトルはサブカラーで締める */
+    line-height: 1.3;
+    font-weight: 700;
+  }
+  .brand p {
+    font-size: 11px;
+    color: var(--primary);   /* サブタイトルはメインカラー */
+    margin: 2px 0 0 0;
+    font-weight: 500;
+  }
+
+  /* --- Header Tools --- */
+  .header-right { display: flex; gap: 8px; position: relative; }
+  .icon-btn {
+    background: var(--header-btn-bg);
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--secondary);
+    font-size: 16px;
+    transition: background 0.2s;
+  }
+  .icon-btn:hover { background: var(--header-btn-hover); }
+
+  /* Settings Menu */
+  .settings-menu {
+    position: absolute;
+    top: 45px; right: 0;
+    width: 240px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 100;
+  }
+  .settings-menu.active { display: block; }
+  .menu-item {
+    padding: 12px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    border-bottom: 1px solid var(--line);
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:hover { background: var(--header-btn-hover); }
+
+  /* --- Basic Info Form --- */
+  .basic-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: var(--soft-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary); /* メインカラーでアクセント */
+  }
+  @media (max-width: 480px) {
+    .basic-info-grid { grid-template-columns: 1fr; }
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--secondary); /* ラベルはサブカラーで視認性向上 */
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: var(--card);
+    color: var(--text);
+    height: 40px;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(34, 174, 201, 0.2);
+  }
+
+  /* --- Questions --- */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 30px 0 15px 0;
+    color: var(--primary); /* セクション見出しはメインカラー */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.05em;
+  }
+  .section-title::before {
+    content: ''; display: block; width: 6px; height: 24px;
+    background: var(--primary); border-radius: 3px;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+  }
+  .question-card:hover {
+    border-color: var(--primary); /* ホバー時にメインカラーを感じさせる */
+  }
+  
+  .q-label {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--secondary); /* 質問文はサブカラーで明確に */
+  }
+  .q-badge {
+    font-size: 10px;
+    background: var(--line);
+    color: var(--sub);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .q-badge.required { background: #fee2e2; color: #ef4444; }
+  .q-badge.important { 
+    background: var(--soft-bg); 
+    color: var(--secondary); 
+    border: 1px solid var(--primary);
+  }
+
+  select {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322AEC9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+  }
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  /* Multi-select style checkboxes */
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    cursor: pointer;
+    background: var(--card);
+    transition: all 0.2s;
+  }
+  .checkbox-label input { margin: 0; }
+  .checkbox-label:has(input:checked) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: bold;
+  }
+
+  /* --- Buttons --- */
+  .action-area { margin-top: 35px; text-align: center; }
+  .btn-main {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 16px 45px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(34, 174, 201, 0.4);
+    width: 100%;
+    max-width: 320px;
+    letter-spacing: 0.05em;
+    transition: transform 0.1s, background 0.2s;
+  }
+  .btn-main:hover { background: var(--primary-dark); }
+  .btn-main:active { transform: translateY(1px); }
+  .btn-main:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+  /* --- Result Area --- */
+  #resultArea {
+    display: none;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px dashed var(--line);
+    animation: fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .result-header { text-align: center; margin-bottom: 25px; }
+  .result-header h2 {
+    color: var(--secondary);
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .result-tag {
+    display: inline-block;
+    background: var(--secondary); /* 結果の結論はサブカラーで強く締める */
+    color: #fff;
+    font-size: 18px;
+    padding: 10px 24px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(2, 5, 98, 0.2);
+    letter-spacing: 0.05em;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .card h3 {
+    font-size: 15px;
+    margin: 0 0 15px 0;
+    color: var(--secondary); /* 見出しはサブカラー */
+    border-bottom: 2px solid var(--soft-bg);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card h3 i { color: var(--primary); margin-right: 8px; }
+  
+  .card-content { font-size: 14px; color: var(--text); line-height: 1.8; white-space: pre-wrap; }
+  
+  /* List Styles */
+  .check-list { list-style: none; padding: 0; margin: 0; }
+  .check-list li {
+    padding-left: 28px; position: relative; margin-bottom: 8px; font-size: 14px; font-weight: 500;
+  }
+  .check-list li::before {
+    content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900;
+    position: absolute; left: 0; top: 4px; 
+    color: var(--primary); /* チェックマークはメインカラー */
+    font-size: 14px;
+  }
+  
+  /* Roadmap Style */
+  .roadmap-grid {
+    display: grid; grid-template-columns: 60px 1fr; gap: 15px; font-size: 14px; margin-bottom: 8px;
+    align-items: baseline;
+  }
+  .roadmap-month { 
+    font-weight: bold; 
+    color: var(--primary); 
+    text-align: center; 
+    background: var(--soft-bg);
+    padding: 2px 0;
+    border-radius: 4px;
+  }
+  
+  /* Copy Block (Source) */
+  .source-box {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  .source-header {
+    background: var(--soft-bg);
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--secondary);
+    border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .source-content {
+    padding: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text);
+    max-height: 120px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    background: var(--card);
+  }
+  .btn-copy {
+    background: #fff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+  .btn-copy:hover { background: var(--primary); color: #fff; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; gap: 12px; justify-content: center; margin-top: 35px; flex-wrap: wrap;
+  }
+  .btn-tool {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--secondary);
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn-tool:hover { background: var(--soft-bg); transform: translateY(-1px); }
+  .btn-tool.primary-tool { 
+    background: var(--secondary); /* PDF保存などはサブカラーで強調 */
+    color: #fff; 
+    border: none; 
+    box-shadow: 0 4px 10px rgba(2, 5, 98, 0.2);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(2, 5, 98, 0.5); /* モーダル背景もサブカラーベース */
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; backdrop-filter: blur(2px);
+  }
+  .modal-content {
+    background: var(--card); width: 90%; max-width: 450px;
+    padding: 30px; border-radius: 12px;
+    max-height: 80vh; overflow-y: auto; position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .modal-close {
+    position: absolute; top: 15px; right: 15px;
+    background: none; border: none; font-size: 24px; cursor: pointer; color: var(--sub);
+  }
+
+  /* PDF Loading */
+  .loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.95);
+    display: none; flex-direction: column;
+    justify-content: center; align-items: center;
+    z-index: 9999; color: var(--primary); font-weight: bold;
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 4px solid var(--soft-bg);
+    border-top: 4px solid var(--primary); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin-bottom: 15px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Print */
+  @media print {
+    .action-area, .toolbar, .header-right, .checkbox-group, select, .source-box { display: none !important; }
+    .container { box-shadow: none; max-width: 100%; margin: 0; padding: 0; }
+    body { background: #fff; }
+    .card { border: 1px solid #ddd; box-shadow: none; break-inside: avoid; }
+    input, select { border: none; background: transparent; -webkit-appearance: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div>PDF生成中...</div>
+</div>
+
+<!-- Partner Settings Modal -->
+<div class="modal-overlay" id="partnerModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="togglePartnerModal()">×</button>
+    <h3 style="margin-top:0; color:var(--secondary)">パートナー設定</h3>
+    <div class="form-group" style="margin-bottom:15px">
+      <label>パートナー名</label>
+      <input type="text" id="partnerNameInput" placeholder="例：ビジネスサポート埼玉">
+    </div>
+    <div class="form-group">
+      <label>ロゴ画像</label>
+      <button class="btn-tool" onclick="document.getElementById('logoInput').click()" style="width:100%; justify-content: center;">
+        <i class="fas fa-image"></i> 画像を選択
+      </button>
+    </div>
+    <div style="margin-top:25px; text-align:center">
+      <button class="btn-main" onclick="savePartnerInfo()">保存して反映</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="toggleHelp()">×</button>
+    <h3 style="margin-top:0; color:var(--secondary)">使い方ガイド</h3>
+    <p style="font-size:14px; line-height:1.8;">
+      1. クライアント情報とQ1〜10を入力<br>
+      2. 「診断」ボタンで推奨カテゴリと製品を判定<br>
+      3. 結果が表示されたら「提案書ソース」をコピー<br>
+      4. PDF保存して社内共有や簡易提案書として利用
+    </p>
+    <h4 style="font-size:14px; margin-bottom:8px; color:var(--primary)">次回準備リスト</h4>
+    <ul style="font-size:13px; padding-left:20px; color:var(--text)">
+      <li>商品マスター、得意先マスター等の件数</li>
+      <li>現在の伝票（納品書・請求書）のコピー</li>
+      <li>月間の伝票枚数</li>
+    </ul>
+    <div style="text-align:center; margin-top:20px">
+      <button class="btn-tool" onclick="toggleHelp()" style="margin:auto">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="contentToPrint">
+  <!-- Header -->
+  <div class="header-row">
+    <div class="header-left">
+      <div class="logo-box" onclick="document.getElementById('logoInput').click()" title="ロゴ変更">
+        <img id="logoImg" src="" style="display:none;" alt="Logo">
+        <span id="logoPlaceholder" data-html2canvas-ignore="true">Logo</span>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" onchange="loadLogo(this)" data-html2canvas-ignore="true">
+      <div class="brand">
+        <h1>販売管理 導入前ヒヤリングシート</h1>
+        <p id="headerSubtitle">〇〇提案ツール</p>
+      </div>
+    </div>
+    <div class="header-right" data-html2canvas-ignore="true">
+      <button class="icon-btn" onclick="toggleHelp()"><i class="fas fa-question"></i></button>
+      <button class="icon-btn" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
+      
+      <div class="settings-menu" id="settingsMenu">
+        <div class="menu-item" onclick="togglePartnerModal()"><i class="fas fa-building"></i> パートナー設定</div>
+        <div class="menu-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> ダークモード</div>
+        <div class="menu-item" onclick="fillDemoData()"><i class="fas fa-magic"></i> デモ入力</div>
+        <div class="menu-item" onclick="resetForm()"><i class="fas fa-trash-alt"></i> リセット</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Basic Info -->
+  <div class="basic-info-grid">
+    <div class="form-group">
+      <label>会社名 <span style="color:red">*</span></label>
+      <input type="text" id="clientName" placeholder="例：株式会社〇〇">
+    </div>
+    <div class="form-group">
+      <label>業種</label>
+      <input type="text" id="industry" placeholder="例：食品卸売">
+    </div>
+    <div class="form-group">
+      <label>拠点数 / 利用人数</label>
+      <div style="display:flex; gap:5px">
+        <input type="text" id="bases" placeholder="拠点" style="width:40%">
+        <input type="text" id="users" placeholder="人数" style="width:60%">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>クラウド希望 <span style="color:red">*</span></label>
+      <select id="cloudPref">
+        <option value="">選択</option>
+        <option value="yes">はい（クラウド必須）</option>
+        <option value="no">いいえ（オンプレ希望）</option>
+        <option value="either">どちらでも</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Diagnostic Questions -->
+  <div class="section-title">診断質問</div>
+
+  <div class="question-card">
+    <div class="q-label">Q1. 業態は？ <span class="q-badge required">必須</span></div>
+    <select id="q1">
+      <option value="">選択してください</option>
+      <option value="wholesale">卸売</option>
+      <option value="manufacturing">製造</option>
+      <option value="retail">小売</option>
+      <option value="construction">工事・保守</option>
+      <option value="service">サービス</option>
+      <option value="other">その他</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q2. 在庫管理は必要？ <span class="q-badge required">必須</span></div>
+    <select id="q2">
+      <option value="">選択してください</option>
+      <option value="exist">在庫あり（自社倉庫）</option>
+      <option value="none">在庫なし（直送・取寄中心）</option>
+      <option value="mixed">混在（在庫品と取寄品）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q3. 商流の複雑さは？ <span class="q-badge important">重要</span></div>
+    <select id="q3">
+      <option value="simple">単純（受注→売上）</option>
+      <option value="medium">中（見積→受注→発注→仕入→売上）</option>
+      <option value="complex">複雑（直送、引当、加工、預かり在庫など）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q4. 請求・締めの状況は？</div>
+    <select id="q4">
+      <option value="single">単一締め（20日締めのみ等）</option>
+      <option value="multi">複数締め（得意先ごとに違う）</option>
+      <option value="project">案件別・都度請求</option>
+      <option value="mess">未整理（これから決める）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q5. 入金消込の手間は？</div>
+    <select id="q5">
+      <option value="easy">ほぼ不要（件数少ない）</option>
+      <option value="medium">少し手間（目視で確認）</option>
+      <option value="hard">毎月かなり大変（振込名義不一致など）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q6. 帳票（納品書・請求書）は？</div>
+    <select id="q6">
+      <option value="standard">標準フォーマットでOK</option>
+      <option value="custom">自社専用フォーマットが多い</option>
+      <option value="specified">取引先指定伝票（専用紙）が多い</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q7. 必要な連携は？（複数選択）</div>
+    <div class="checkbox-group" id="q7">
+      <label class="checkbox-label"><input type="checkbox" value="acc"> 会計</label>
+      <label class="checkbox-label"><input type="checkbox" value="ec"> EC</label>
+      <label class="checkbox-label"><input type="checkbox" value="eos"> 受発注(EOS)</label>
+      <label class="checkbox-label"><input type="checkbox" value="wms"> 倉庫/ハンディ</label>
+      <label class="checkbox-label"><input type="checkbox" value="none"> 未定</label>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q8. カスタマイズ必要性</div>
+    <select id="q8">
+      <option value="none">ほぼ不要（パッケージに合わせる）</option>
+      <option value="low">少し必要（項目追加程度）</option>
+      <option value="high">かなり必要（独自業務フローあり）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q9. 現状のシステム</div>
+    <select id="q9">
+      <option value="excel">Excel / 手書き</option>
+      <option value="replace">既存システム（入替時期）</option>
+      <option value="double">複数システムで二重入力がつらい</option>
+      <option value="new">未導入（新規）</option>
+    </select>
+  </div>
+
+  <div class="question-card">
+    <div class="q-label">Q10. 予算感</div>
+    <select id="q10">
+      <option value="small">小さく始めたい</option>
+      <option value="standard">標準的</option>
+      <option value="large">しっかり投資できる</option>
+      <option value="unknown">未定</option>
+    </select>
+  </div>
+
+  <div class="action-area" data-html2canvas-ignore="true">
+    <button class="btn-main" onclick="diagnose()">診断結果を表示</button>
+  </div>
+
+  <!-- Result Area -->
+  <div id="resultArea">
+    <div class="result-header">
+      <h2>診断結果レポート</h2>
+      <div class="result-tag" id="resCategory">カテゴリ判定中...</div>
+    </div>
+
+    <!-- 1. Candidates -->
+    <div class="card">
+      <h3><i class="fas fa-star" style="color:var(--accent)"></i> 推奨候補製品（2〜3選）</h3>
+      <div id="resCandidates" style="font-weight:bold; font-size:18px; color:var(--primary); margin-bottom:10px;"></div>
+      <div id="resReason" style="font-size:14px; color:var(--text)"></div>
+    </div>
+
+    <!-- 2. Small Start -->
+    <div class="card">
+      <h3><i class="fas fa-flag-checkered" style="color:var(--primary)"></i> 最初の30日でやること（スモールスタート）</h3>
+      <ul class="check-list" id="resSmallStart"></ul>
+    </div>
+
+    <!-- 3. Roadmap -->
+    <div class="card">
+      <h3><i class="fas fa-road" style="color:var(--primary)"></i> 導入ロードマップ</h3>
+      <div id="resRoadmap"></div>
+    </div>
+
+    <!-- 4. Next Questions -->
+    <div class="card">
+      <h3><i class="fas fa-search"></i> 次に確認すべきこと</h3>
+      <ul class="check-list" id="resNextQ"></ul>
+    </div>
+
+    <!-- 5. Sales Talk -->
+    <div class="card" style="background:var(--soft-bg); border-color:var(--primary);">
+      <h3><i class="fas fa-comment-dots"></i> 営業トークメモ</h3>
+      <div class="card-content" id="resTalk" style="font-weight:500;"></div>
+    </div>
+
+    <!-- 6. Homework -->
+    <div class="card">
+      <h3><i class="fas fa-tasks"></i> 社内宿題（準備データ）</h3>
+      <ul class="check-list" id="resHomework"></ul>
+    </div>
+
+    <!-- Proposal Generation Section -->
+    <div class="section-title"><i class="fas fa-magic"></i> 提案書生成ソース</div>
+    
+    <div class="card">
+      <h3>
+        <span>NotebookLM インフォグラフィック用</span>
+        <button class="btn-copy" onclick="copyText('srcNotebook')">コピー</button>
+      </h3>
+      <div class="source-box">
+        <div class="source-content" id="srcNotebook"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>
+        <span>スライド資料構成（Markdown）</span>
+        <button class="btn-copy" onclick="copyText('srcSlide')">コピー</button>
+      </h3>
+      <div class="source-box">
+        <div class="source-content" id="srcSlide"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>
+        <span>提案メール文面</span>
+        <button class="btn-copy" onclick="copyText('srcEmail')">コピー</button>
+      </h3>
+      <div class="source-box">
+        <div class="source-content" id="srcEmail"></div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar" data-html2canvas-ignore="true">
+      <button class="btn-tool primary-tool" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF保存</button>
+      <button class="btn-tool" onclick="downloadText()"><i class="fas fa-file-alt"></i> テキスト保存</button>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:40px; font-size:11px; color:var(--sub); border-top:1px solid var(--line); padding-top:15px;">
+    Created by <span id="footerPartnerName">販売管理導入支援ツール</span>
+  </div>
+</div>
+
+<script>
+  // --- Logic Data ---
+  const CATEGORIES = {
+    STOCK_FLOW: "在庫・商流重視型",
+    CLOUD: "クラウド簡易スタート型",
+    BILLING: "請求・消込・帳票重視型",
+    CUSTOM: "カスタマイズ前提型",
+    REQ: "まずは要件整理型"
+  };
+
+  const PRODUCTS = {
+    mimasaka: "みまさか販売",
+    rakuichi: "楽一",
+    rakuichiEz: "楽一EZ",
+    rakuraku: "楽楽販売",
+    daijin: "販売大臣",
+    pca: "PCA 商魂・商管"
+  };
+
+  // --- Main Logic ---
+  function diagnose() {
+    // Validation
+    const client = document.getElementById('clientName').value;
+    const cloud = document.getElementById('cloudPref').value;
+    const q1 = document.getElementById('q1').value; // 業態
+    const q2 = document.getElementById('q2').value; // 在庫
+
+    if (!client || !cloud || !q1 || !q2) {
+      alert('必須項目（会社名、クラウド希望、Q1、Q2）を入力してください。');
+      return;
+    }
+
+    // Get Values
+    const q3 = document.getElementById('q3').value; // 商流
+    const q4 = document.getElementById('q4').value; // 請求
+    const q5 = document.getElementById('q5').value; // 消込
+    const q6 = document.getElementById('q6').value; // 帳票
+    const q8 = document.getElementById('q8').value; // カスタム
+    const q9 = document.getElementById('q9').value; // 現状
+    const q10 = document.getElementById('q10').value; // 予算
+    
+    // Determine Category
+    let category = CATEGORIES.REQ; // Default
+    let reasonShort = "";
+    
+    if (q8 === 'high') {
+      category = CATEGORIES.CUSTOM;
+      reasonShort = "独自業務フローが多く、標準機能では対応しきれないため";
+    } else if (q5 === 'hard' || q6 === 'custom' || q6 === 'specified') {
+      category = CATEGORIES.BILLING;
+      reasonShort = "請求書発行や消込業務の負荷が高く、正確性が求められるため";
+    } else if (cloud === 'yes' && q10 === 'small') {
+      category = CATEGORIES.CLOUD;
+      reasonShort = "初期コストを抑え、場所を選ばず利用したいため";
+    } else if ((q2 === 'exist' || q2 === 'mixed') && q3 === 'complex') {
+      category = CATEGORIES.STOCK_FLOW;
+      reasonShort = "在庫管理と複雑な商流への対応が最優先課題であるため";
+    } else if (q4 === 'mess' || q9 === 'excel') {
+      category = CATEGORIES.REQ;
+      reasonShort = "現状の業務フローが未整理であり、システム化の前に整理が必要なため";
+    }
+
+    // Determine Products
+    let cands = [];
+    if (category === CATEGORIES.STOCK_FLOW) {
+      cands = [PRODUCTS.mimasaka, PRODUCTS.rakuichi, PRODUCTS.pca];
+    } else if (category === CATEGORIES.CLOUD) {
+      cands = [PRODUCTS.rakuichiEz, PRODUCTS.rakuraku];
+      if(q3 === 'complex') cands.push(PRODUCTS.pca); 
+    } else if (category === CATEGORIES.BILLING) {
+      cands = [PRODUCTS.pca, PRODUCTS.daijin, PRODUCTS.rakuichi];
+    } else if (category === CATEGORIES.CUSTOM) {
+      cands = [PRODUCTS.rakuichi, PRODUCTS.daijin, PRODUCTS.rakuraku];
+    } else { // REQ
+      cands = [PRODUCTS.rakuichiEz, PRODUCTS.rakuraku];
+    }
+    const candidatesStr = cands.slice(0, 3).join(" / ");
+
+    // Generate Texts
+    document.getElementById('resCategory').textContent = category;
+    document.getElementById('resCandidates').textContent = candidatesStr;
+    document.getElementById('resReason').textContent = `判定理由: ${reasonShort}\n${q1}業態で${q2 === 'exist' ? '在庫あり' : '在庫なし'}の運用に適しています。`;
+
+    // Small Start (Dynamic)
+    const smallStartList = [
+      "現状の伝票（見積・納品・請求）の全種類コピー回収",
+      "商品マスタのExcel整理（コード体系の見直し）",
+      "得意先マスタの整理（締め日・回収条件の確認）",
+      "現行業務フローの書き出し（手書きでOK）",
+      "主要担当者1名を選定し、週1回の定例MTG設定"
+    ];
+    renderList('resSmallStart', smallStartList);
+
+    // Roadmap
+    document.getElementById('resRoadmap').innerHTML = `
+      <div class="roadmap-grid"><div class="roadmap-month">30日</div><div>要件定義・マスタ整備・テスト環境構築</div></div>
+      <div class="roadmap-grid"><div class="roadmap-month">60日</div><div>並行稼働テスト・操作研修・帳票修正</div></div>
+      <div class="roadmap-grid"><div class="roadmap-month">90日</div><div>本稼働開始・旧システム停止・月次締め処理確認</div></div>
+    `;
+
+    // Next Questions
+    const nextQ = [
+      "現在お使いのPCの台数とOSバージョンは？",
+      "伝票（納品書）はドットプリンタ印刷ですか？複合機ですか？",
+      "システム管理者は社内にいらっしゃいますか？"
+    ];
+    renderList('resNextQ', nextQ);
+
+    // Sales Talk
+    const talk = `
+「${client}様の現状ですと、いきなり全てをシステム化するよりも『${category}』で進めるのが安全です。
+具体的には ${candidatesStr} あたりが候補になります。
+まずは今の伝票類を一度お預かりして、どこまで標準機能でいけるか診断させてもらえませんか？」
+    `.trim();
+    document.getElementById('resTalk').textContent = talk;
+
+    // Homework
+    const homework = [
+      "商品一覧データ（Excel）",
+      "得意先・仕入先一覧データ",
+      "現在使用している全帳票サンプル",
+      "担当者PCのスペック確認",
+      "在庫棚卸しのルール確認",
+      "銀行口座・振込手数料ルールの確認",
+      "希望導入スケジュールの社内合意"
+    ];
+    renderList('resHomework', homework);
+
+    // --- Generate Proposal Sources ---
+    
+    // NotebookLM Source
+    const srcNotebook = `
+【販売管理システム導入プロジェクト概要】
+1. タイトル: ${client}様 販売管理システム導入提案
+2. サブタイトル: 業務効率化と${reasonShort}の実現
+3. 現状まとめ: 業種は${q1}、在庫は${q2 === 'exist' ? 'あり' : 'なし'}。現状は${q9}での運用。
+4. 目指すゴール: 正確な在庫把握、請求業務の時短、属人化の解消
+5. 主要課題: 商流の複雑さ(${q3})、${q5 === 'hard' ? '消込の手間' : '事務負担の軽減'}
+6. 推奨方針: ${category}
+7. 候補製品: ${candidatesStr}（${reasonShort}）
+8. スモールスタート: マスタ整備、フロー図作成など基礎固め
+9. 導入ロードマップ: 3ヶ月での本稼働を目指す
+10. 次回確認: PC環境、プリンタ環境、管理者有無
+11. 社内宿題: 伝票サンプル、各種マスタデータの準備
+12. 最後に: 現場の使い勝手を最優先し、止まらないシステム移行を支援します。
+    `.trim();
+    document.getElementById('srcNotebook').textContent = srcNotebook;
+
+    // Slide Source
+    const srcSlide = `
+# スライド1：${client}様 販売管理システム導入のご提案
+# スライド2：本日のゴール
+- 現状の課題と目指す姿の共有
+- 推奨するシステム導入方針の合意
+# スライド3：現状と課題
+- 現状：${q9}、${q1}、在庫${q2 === 'exist' ? 'あり' : 'なし'}
+- 課題：${reasonShort}
+# スライド4：要件整理
+- 商流：${q3}
+- 請求：${q4}
+- クラウド希望：${cloud === 'yes' ? 'はい' : 'いいえ'}
+# スライド5：推奨方針
+- カテゴリ：${category}
+- 理由：現場負担を最小限に抑えるため
+# スライド6：候補製品比較
+- ${candidatesStr}
+- 選定ポイント：機能適合度と予算のバランス
+# スライド7：導入ステップ
+- 1ヶ月目：要件定義・マスタ整備
+- 2ヶ月目：並行稼働・研修
+- 3ヶ月目：本稼働
+# スライド8：次回確認と宿題
+- 伝票サンプルのご提供
+- マスタデータの準備
+    `.trim();
+    document.getElementById('srcSlide').textContent = srcSlide;
+
+    // Email Source
+    const srcEmail = `
+件名：販売管理システム導入のお打ち合わせ御礼
+
+${client}
+ご担当者様
+
+お世話になっております。
+本日はヒヤリングのお時間をいただきありがとうございました。
+
+本日の整理ポイントをまとめました。
+
+■ 推奨方針
+${category}での導入検討
+
+■ 候補製品
+${candidatesStr}
+
+■ 次回確認させていただきたい点
+1. PC・プリンタの利用環境
+2. 現在の伝票サンプルの確認
+3. マスタデータの整備状況
+
+上記を踏まえ、具体的なデモと概算見積を提示したく存じます。
+以下の日程のご都合いかがでしょうか？
+
+・[日付候補1]
+・[日付候補2]
+・[日付候補3]
+
+よろしくお願いいたします。
+--------------------------------------------------
+${document.getElementById('footerPartnerName').textContent}
+    `.trim();
+    document.getElementById('srcEmail').textContent = srcEmail;
+
+    // Show Result
+    document.getElementById('resultArea').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+
+  // --- Helpers ---
+  function renderList(id, items) {
+    const ul = document.getElementById(id);
+    ul.innerHTML = "";
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      ul.appendChild(li);
+    });
+  }
+
+  function copyText(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      alert('コピーしました');
+    }).catch(err => {
+      alert('コピーに失敗しました');
+    });
+  }
+
+  // --- Settings & Init ---
+  window.onload = function() {
+    // Load Partner
+    const pName = localStorage.getItem('sm_partner_name');
+    if(pName) updatePartnerDisplay(pName);
+    
+    // Load Logo
+    const logo = localStorage.getItem('sm_partner_logo');
+    if(logo) {
+      document.getElementById('logoImg').src = logo;
+      document.getElementById('logoImg').style.display = 'block';
+      document.getElementById('logoPlaceholder').style.display = 'none';
+    }
+
+    // Load Dark Mode
+    if(localStorage.getItem('sm_theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  };
+
+  function toggleSettings() {
+    document.getElementById('settingsMenu').classList.toggle('active');
+  }
+
+  function togglePartnerModal() {
+    const el = document.getElementById('partnerModal');
+    const input = document.getElementById('partnerNameInput');
+    el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+    document.getElementById('settingsMenu').classList.remove('active');
+    if(el.style.display === 'flex') {
+      input.value = localStorage.getItem('sm_partner_name') || "";
+    }
+  }
+
+  function savePartnerInfo() {
+    const name = document.getElementById('partnerNameInput').value;
+    localStorage.setItem('sm_partner_name', name);
+    updatePartnerDisplay(name);
+    togglePartnerModal();
+  }
+
+  function updatePartnerDisplay(name) {
+    if(name) {
+      document.getElementById('headerSubtitle').textContent = name + " 提案ツール";
+      document.getElementById('footerPartnerName').textContent = name;
+    } else {
+      document.getElementById('headerSubtitle').textContent = "〇〇提案ツール";
+      document.getElementById('footerPartnerName').textContent = "販売管理導入支援ツール";
+    }
+  }
+
+  function loadLogo(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('logoImg').src = e.target.result;
+        document.getElementById('logoImg').style.display = 'block';
+        document.getElementById('logoPlaceholder').style.display = 'none';
+        localStorage.setItem('sm_partner_logo', e.target.result);
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('sm_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    document.getElementById('settingsMenu').classList.remove('active');
+  }
+
+  function toggleHelp() {
+    const el = document.getElementById('helpModal');
+    el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+  }
+
+  function fillDemoData() {
+    document.getElementById('clientName').value = "株式会社サンプル商事";
+    document.getElementById('industry').value = "管工機材卸";
+    document.getElementById('bases').value = "3拠点";
+    document.getElementById('users').value = "10名";
+    document.getElementById('cloudPref').value = "yes";
+    
+    document.getElementById('q1').value = "wholesale";
+    document.getElementById('q2').value = "exist";
+    document.getElementById('q3').value = "complex";
+    document.getElementById('q4').value = "multi";
+    document.getElementById('q5').value = "medium";
+    document.getElementById('q6').value = "specified";
+    // Checkboxes
+    document.querySelectorAll('#q7 input').forEach(c => c.checked = false);
+    document.querySelector('#q7 input[value="eos"]').checked = true;
+    
+    document.getElementById('q8').value = "low";
+    document.getElementById('q9').value = "replace";
+    document.getElementById('q10').value = "standard";
+    
+    document.getElementById('settingsMenu').classList.remove('active');
+    alert("卸売業のデモデータを入力しました");
+  }
+
+  function resetForm() {
+    if(!confirm('入力内容を消去しますか？')) return;
+    document.getElementById('clientName').value = "";
+    document.getElementById('industry').value = "";
+    document.getElementById('bases').value = "";
+    document.getElementById('users').value = "";
+    document.getElementById('cloudPref').value = "";
+    document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    document.getElementById('resultArea').style.display = 'none';
+    document.getElementById('settingsMenu').classList.remove('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // --- Output ---
+  function downloadPDF() {
+    const element = document.getElementById('contentToPrint');
+    const isDark = document.body.classList.contains('dark-mode');
+    const client = document.getElementById('clientName').value || "client";
+    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, "");
+    
+    // Temporarily expand height for PDF
+    const originalHeight = element.style.height;
+    element.style.height = 'auto';
+    
+    const opt = {
+      margin: 10,
+      filename: `販売管理ヒヤリング_${client}_${dateStr}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: isDark ? '#1e293b' : '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    document.getElementById('loading').style.display = 'flex';
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+      document.getElementById('loading').style.display = 'none';
+      element.style.height = originalHeight;
+    }).catch(err => {
+      console.error(err);
+      alert('PDF生成に失敗しました');
+      document.getElementById('loading').style.display = 'none';
+    });
+  }
+
+  function downloadText() {
+    const client = document.getElementById('clientName').value;
+    const cat = document.getElementById('resCategory').textContent;
+    const nb = document.getElementById('srcNotebook').textContent;
+    const email = document.getElementById('srcEmail').textContent;
+    
+    const content = `
+【販売管理システム導入診断】
+企業名: ${client}
+判定: ${cat}
+
+■ NotebookLMソース
+${nb}
+
+■ 提案メール
+${email}
+    `.trim();
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `proposal_${client}.txt`;
+    link.click();
+  }
+</script>
+</body>
+</html>
